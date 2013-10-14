@@ -12,9 +12,10 @@ errors, this plugin won't find any problems unless something really horrible
 happened.
 
 If you re-theme the status messages, you may need to pass the plugin different
-text strings to look for using the -m option.
+text strings to look for using the -e and -w options.
 
 Usage: ./check_drupal_messages -U http://example.com/
+       ./check_drupal_messages -U http://example.com/ -e error -w warning
 
 ---------------------------
 
