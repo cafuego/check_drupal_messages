@@ -4,8 +4,8 @@ check_drupal_messages
 Hit a Drupal front page and check if are any status messages are displayed.
 
 If none are found, the plugin returns status OK. The other two statuses are:
-WARNING if it finds <div class="status warning"> and ERROR if it finds
-<div class="status error">.
+WARNING if it finds &lt;div class="status warning"&gt; and ERROR if it finds
+&lt;div class="status error"&gt;.
 
 If you set error display to None via Configuration » Development » Logging and
 errors, this plugin won't find any problems unless something really horrible
