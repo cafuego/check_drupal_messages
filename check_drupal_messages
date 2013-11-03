@@ -103,17 +103,22 @@ exit $status;
 
 
 
-sub HELP_MESSAGE 
+sub HELP_MESSAGE
 {
   print <<EOHELP
   Retrieve an http/s URL and looks in its output for a given text. 
-  Returns CRITICAL is not found, OK if found, UNKNOWN otherwise.
-  
+  Returns CRITICAL if error text is found or an unexpected HTTP status code is returned,
+  WARNING if warning text is found, OK if neither is found.
+
   --help      shows this message
   --version   shows version information
 
   -U          URL to retrieve (http or https)
-  -m <text>   Text to match in the output of the URL
+  -e <text>   Text to match in the output of the URL for error status. Defaults
+              to '<div class="status error">'.
+  -w <text>   Text to match in the output of the URL for warning status. Defaults
+              to '<div class="status warning">'.
+  -s <code>   HTTP status code to expect from the URL, if not 200 (OK).
   -t          Timeout in seconds to wait for the URL to load. If the page fails to load, 
               $plugin_name will exit with UNKNOWN state (default 60)
 
