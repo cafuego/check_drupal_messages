@@ -55,10 +55,11 @@ use constant EXIT_UNKNOWN  => 3;
 my $start_run = time;
 # parse cmd opts
 my %opts;
-getopts('vU:t:we:', \%opts);
+getopts('vU:s:t:w:', \%opts);
 $opts{e} = '<div class="status error">' unless (defined $opts{e});
 $opts{w} = '<div class="status warning">' unless (defined $opts{w});
 $opts{t} = 60 unless (defined $opts{t});
+$opts{s} = 200 unless (defined $opts{s});
 if (not (defined $opts{U})) {
   print "ERROR: INVALID USAGE\n";
   HELP_MESSAGE();
@@ -71,12 +72,12 @@ my $ua = LWP::UserAgent->new;
 $ua->timeout($opts{t});
 
 # retrieve url
- my $response = $ua->get($opts{U});
- my $expected_length;
- my $bytes_received = 0;
- my $end_run   = time;
- my $run_time = $end_run - $start_run;
- if (not $response->is_success) {
+my $response = $ua->get($opts{U});
+my $expected_length;
+my $bytes_received = 0;
+my $end_run   = time;
+my $run_time = $end_run - $start_run;
+if (not $response->is_success and not $response->code =~ /$opts{s}/) {
   print "ERROR: CANNOT RETRIEVE URL: $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=0B;;;0 \n";
   $status = EXIT_UNKNOWN;
 } else {
@@ -87,13 +88,13 @@ $ua->timeout($opts{t});
   if ($expected_length) { printf STDERR "%d%% - ", 100 * $bytes_received / $expected_length; }
 
   if ($content =~ m/$opts{e}/gsm) {
-    print "CONTENT ERROR: Error message found on $opts{U}|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
+    print "CONTENT ERROR: Error message found on $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
     $status = EXIT_CRITICAL;
   } elsif ($content =~ m/$opts{w}/gsm) {
-    print "CONTENT WARNING: Warning message found on $opts{U}|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
+    print "CONTENT WARNING: Warning message found on $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
     $status = EXIT_WARNING;
   } else {
-    print "CONTENT OK: No messages found on $opts{U}|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
+    print "CONTENT OK: No messages found on $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
     $status = EXIT_OK;
   }
 }
