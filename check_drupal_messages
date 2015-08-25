@@ -55,7 +55,7 @@ use constant EXIT_UNKNOWN  => 3;
 my $start_run = time;
 # parse cmd opts
 my %opts;
-getopts('vU:s:t:w:', \%opts);
+getopts('vU:e:s:t:w:', \%opts);
 $opts{e} = '<div class="status error">' unless (defined $opts{e});
 $opts{w} = '<div class="status warning">' unless (defined $opts{w});
 $opts{t} = 60 unless (defined $opts{t});
@@ -94,7 +94,7 @@ if (not $response->is_success and not $response->code =~ /$opts{s}/) {
     print "CONTENT WARNING: Warning message found on $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
     $status = EXIT_WARNING;
   } else {
-    print "CONTENT OK: No messages found on $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
+    print "CONTENT OK: No unexpected messages found on $opts{U} ", $response->status_line, "|time=".$run_time."s;;;0.000000 size=".$bytes_received."B;;;0 \n";
     $status = EXIT_OK;
   }
 }
